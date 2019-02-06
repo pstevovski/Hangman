@@ -1,0 +1,24 @@
+/* LETTERS */
+.letters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #cccccc90;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    width: 20px;
+    height: 20px;
+    padding: 15px;
+    margin: 5px;
+    text-transform: uppercase;
+    font-family: "Montserrat SemiBold";
+    transition: 0.1s ease;
+    cursor: pointer;
+}
+
+.letters:hover {
+  background-color: #00a8ff;
+  color: #fff;
+}
