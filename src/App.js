@@ -4,6 +4,8 @@ import './App.css';
 // IMPORT COMPONENTS
 import Letters from './Letters/Letters';
 import Word from './Word/Word';
+import GameOver from './GameOver/GameOver';
+import MainMenu from './MainMenu/MainMenu';
 
 class App extends Component {
   state = {
@@ -12,7 +14,11 @@ class App extends Component {
     typedWord: [],
     livesLeft: 5,
     message: '',
-    wordMatched: false
+    wordMatched: false,
+    score: 0,
+    gameOver: false,
+    mainMenu: true,
+    playing: false
   }
 
   letterClickHandler = ( key, index ) => {
@@ -23,30 +29,68 @@ class App extends Component {
     for(let i = 0; i < theWord.length; i++) {
       if(theWord[i] === key) {
         this.setState({
-          ...this.state.typedWord.splice(i, 0, key)
+          ...this.state.typedWord.splice(i, 0, key),
         })
       }
+    }
+
+    // If the letter pressed is not present in the word to be matched, loose a life
+    if(!theWord.includes(key)) {
+      this.decreaseLives();
     }
 
     // Disable the clicked button
     document.getElementById(`${index}`).disabled = true;    
 
-    // Check if the chosen word matches the typed word
+    // Check if the chosen word matches the typed word, if so increase score and give another word
     if(theWord.join('') === this.state.typedWord.join('')) {
-      // this.setState({wordMatched: true})
-        // this.displayMessage();
-        // document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
+      this.setState({
+        score: ++this.state.score,
+        word: "test",
+        typedWord: []
+      })
 
-        // this.setState({
-        //   word: "victory",
-        //   typedWord: []
-        // })
+      // Re-enable all the buttons (letters) that were previously disabled
+      document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
+
+      // Display a message
+      this.displayMessage("Good job!");
     }
   }
 
-  displayMessage = () => {
-    this.setState({message: "You got it right!"})
+  // CONTROL SCORES
+  decreaseLives = () => {
+    this.setState({livesLeft: --this.state.livesLeft});
+
+    this.displayMessage("Wrong one!");
   }
+
+  displayMessage = message => {
+    this.setState({message: message})
+
+    // Clear the message
+    setTimeout(() => {
+        this.setState({message: ""})
+    }, 1000);
+  }
+
+  // START / RESTART GAME
+  startGame = () => {
+    // On restart, reset game over state, score, typed word, lives left and set a new word to guess
+    this.setState({
+      word: "idiocracy",
+      livesLeft: 5,
+      score: 0,
+      gameOver: false,
+      typedWord: [],
+      playing: true,
+      mainMenu: false
+    })
+
+    // Enable all the buttons (letters) that were disabled in previous game
+    document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
+  }
+
 
   render() {
     // Generate the letter components for each letter in the alphabet
@@ -71,11 +115,29 @@ class App extends Component {
       return <Word wordLength={null} key={index} />
     })
 
+    // Render Game over menu if game was lost
+    let menu = null;
+    if(this.state.mainMenu) {
+      menu = (
+        <MainMenu play={this.startGame} />
+      )
+    }
+    if(this.state.gameOver) {
+      menu = (
+        <GameOver score={this.state.score} restart={this.startGame} exit={this.exitGame}/>
+      )
+    }
+
+    // PLAYING MENU
+    const playingMenu = <div><p>{this.state.message}</p>
+    <p>{this.state.score}</p>
+    <div className="the-word">{generatedWord}</div>
+    <div className="letterContainer">{generatedLetters}</div></div>
+
     return (
       <div className="App">
-        <p>{this.state.message}</p>
-        <div className="the-word">{generatedWord}</div>
-        <div className="letterContainer">{generatedLetters}</div>
+        {menu}
+        {this.state.playing ? playingMenu : null}
       </div>
     );
   }
