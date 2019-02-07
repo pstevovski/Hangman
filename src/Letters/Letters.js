@@ -1,11 +1,11 @@
 import React from 'react';
 import './Letters.css';
 
-const letters = props => {    
+const letters = props => {
     return (
-        <div>
-            <span className="letters" onClick={props.click}>{props.letter}</span>
-        </div>
+    <div>
+        <button className="letters" id={props.id} onClick={props.click}>{props.letter}</button>
+    </div>
     )
 }
 

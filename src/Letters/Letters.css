@@ -8,17 +8,28 @@
     color: #333;
     border: 1px solid #cccccc90;
     box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-    width: 20px;
-    height: 20px;
+    width: 50px;
+    height: 50px;
     padding: 15px;
     margin: 5px;
     text-transform: uppercase;
     font-family: "Montserrat SemiBold";
     transition: 0.1s ease;
     cursor: pointer;
+    outline: none;
 }
 
 .letters:hover {
   background-color: #00a8ff;
   color: #fff;
+}
+
+.letters:disabled {
+  color: #444;
+  background-color: #ccc;
+  box-shadow: inset 0px 1px 7px rgba(0,0,0,0.5);
+}
+.letters:disabled:hover {
+  background-color: #ccc;
+  color: #444;
 }
