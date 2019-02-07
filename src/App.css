@@ -17,4 +17,47 @@
   transform: translateX(-50%);
 }
 
+/* WORD */
+.the-word {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.the-word p{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 50px;
+  height: 50px;
+  background-color: #eee;
+  color: #444;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-bottom: 3px solid rgba(0,0,0,0.3);
+  margin: 5px;
+  font-size: 20px;
+  font-family: "Montserrat SemiBold";
+}
+
+.the-word .matched {
+  background-color: #00a8ff;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-bottom: 3px solid rgba(0,0,0,0.3);
+  margin: 5px;
+  font-size: 20px;
+  font-family: "Montserrat SemiBold";
+}
