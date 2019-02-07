@@ -6,7 +6,6 @@ import Letters from './Letters/Letters';
 import Word from './Word/Word';
 import GameOver from './GameOver/GameOver';
 import MainMenu from './MainMenu/MainMenu';
-
 class App extends Component {
   state = {
     letters: [...'abcdefghijklmnopqrstuvwxyz'],
@@ -44,15 +43,17 @@ class App extends Component {
 
     // Check if the chosen word matches the typed word, if so increase score and give another word
     if(theWord.join('') === this.state.typedWord.join('')) {
-      this.setState({
-        score: ++this.state.score,
-        word: "test",
-        typedWord: []
-      })
+      setTimeout(() => {
+        this.setState({
+          score: ++this.state.score,
+          word: "test",
+          typedWord: []
+        })
 
-      // Re-enable all the buttons (letters) that were previously disabled
-      document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
-
+        // Re-enable all the buttons (letters) that were previously disabled
+        document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
+      }, 1000)
+  
       // Display a message
       this.displayMessage("Good job!");
     }
@@ -61,6 +62,13 @@ class App extends Component {
   // CONTROL SCORES
   decreaseLives = () => {
     this.setState({livesLeft: --this.state.livesLeft});
+
+    if(this.state.livesLeft <= 0) {
+      this.setState({
+        playing: false,
+        gameOver: true
+      })
+    }
 
     this.displayMessage("Wrong one!");
   }
@@ -85,6 +93,22 @@ class App extends Component {
       typedWord: [],
       playing: true,
       mainMenu: false
+    })
+
+    // Enable all the buttons (letters) that were disabled in previous game
+    document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
+  }
+
+  // EXIT GAME
+  exitGame = () => {
+    // Set the state to match the exited game state
+    this.setState({
+      livesLeft: 5,
+      score: 0,
+      gameOver: false,
+      playing: false,
+      mainMenu: true,
+      typedWord: []
     })
 
     // Enable all the buttons (letters) that were disabled in previous game
@@ -129,10 +153,13 @@ class App extends Component {
     }
 
     // PLAYING MENU
-    const playingMenu = <div><p>{this.state.message}</p>
-    <p>{this.state.score}</p>
-    <div className="the-word">{generatedWord}</div>
-    <div className="letterContainer">{generatedLetters}</div></div>
+    const playingMenu = <div>
+        <button className="exit-btn" onClick={this.exitGame}>Exit</button>
+        <p className="message">{this.state.message}</p>
+        <p className="score">Score: <span>{this.state.score}</span></p>
+        <div className="the-word">{generatedWord}</div>
+        <div className="letterContainer">{generatedLetters}</div>
+      </div>
 
     return (
       <div className="App">
@@ -146,13 +173,19 @@ class App extends Component {
 export default App;
 
 /*
--Keys component
--Words component - where it will display the word that needs to be guessed and create _ _ _ according to its length.
 -The hang component(?)
-
-- Decreasing lives as user clicks wrong letter
+- Add a class to the letters when matched, and remove it afterwards
 - Play again - updates state with new word to match
-- Start game menu - that based on current state, renders either start menu or the game menu
-- Score count
 - Add option to use keyboard instead of onscreen letters
+
+
+wordsToGuess = ['test', 'demo', 'banana', 'democracy', 'dictatorship', 'idiocracy', 'war', 'new york', 'skopje', 'macedonia', 'javascript', 'programming', 'react', 'chocholate', 'beer','coca cola', 'germany', 'france', 'dortmund', 'london', 'barcelona', 'android', 'intelligence', 'warcraft', 'laptop', 'computer', 'keyboard', 'earth', 'mars', 'galaxy', 'samsung', 'apple'];
+*/
+
+/* DONE
+- Decreasing lives as user clicks wrong letter - DONE
+- Start game menu - that based on current state, renders either start menu or the game menu - DONE
+- Score count - DONE
+- Keys component
+- Words component - where it will display the word that needs to be guessed and create _ _ _ according to its length
 */
