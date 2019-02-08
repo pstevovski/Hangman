@@ -7,31 +7,35 @@ import Word from './Word/Word';
 import GameOver from './GameOver/GameOver';
 import MainMenu from './MainMenu/MainMenu';
 class App extends Component {
+  wordsToGuess = ['test', 'demo', 'banana', 'democracy', 'dictatorship', 'idiocracy', 'war', 'new york', 'skopje', 'macedonia', 'javascript', 'programming', 'react', 'chocholate', 'beer','coca cola', 'germany', 'france', 'dortmund', 'london', 'barcelona', 'android', 'intelligence', 'warcraft', 'laptop', 'computer', 'keyboard', 'earth', 'mars', 'galaxy', 'samsung', 'apple'];
+  wordIndex = Math.floor(Math.random() * this.wordsToGuess.length);
+
   state = {
     letters: [...'abcdefghijklmnopqrstuvwxyz'],
-    word: 'banana',
+    word: this.wordsToGuess[this.wordIndex],
     typedWord: [],
     livesLeft: 5,
     message: '',
-    wordMatched: false,
+    wordClass: '',
     score: 0,
     gameOver: false,
     mainMenu: true,
     playing: false
   }
 
+  updatedTypedWord = [...this.state.typedWord];
+  // WHEN LETTER IS CLICKED
   letterClickHandler = ( key, index ) => {
     const theWord = [...this.state.word];
 
     // Cycle trough the chosen word, and check if the entered letter (key) matches a letter
     // at any of the index positions of the chosen word
-    for(let i = 0; i < theWord.length; i++) {
+    for(let i = 0; i < theWord.length; ++i) {
       if(theWord[i] === key) {
-        this.setState({
-          ...this.state.typedWord.splice(i, 0, key),
-        })
+        this.updatedTypedWord[i] = key;
       }
     }
+    this.setState({typedWord: this.updatedTypedWord})
 
     // If the letter pressed is not present in the word to be matched, loose a life
     if(!theWord.includes(key)) {
@@ -39,16 +43,24 @@ class App extends Component {
     }
 
     // Disable the clicked button
-    document.getElementById(`${index}`).disabled = true;    
+    document.getElementById(`${index}`).disabled = true;
+    
+    console.log(this.state.typedWord);
 
     // Check if the chosen word matches the typed word, if so increase score and give another word
     if(theWord.join('') === this.state.typedWord.join('')) {
+      this.setState({wordClass: "matched"});
+
       setTimeout(() => {
+        // Get a random word for the state
+        this.getRandomWord();
+
         this.setState({
           score: ++this.state.score,
-          word: "test",
-          typedWord: []
+          typedWord: [],
+          wordClass: ''
         })
+        this.updatedTypedWord = [...this.state.typedWord];
 
         // Re-enable all the buttons (letters) that were previously disabled
         document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
@@ -84,9 +96,10 @@ class App extends Component {
 
   // START / RESTART GAME
   startGame = () => {
+    this.getRandomWord();
+
     // On restart, reset game over state, score, typed word, lives left and set a new word to guess
     this.setState({
-      word: "idiocracy",
       livesLeft: 5,
       score: 0,
       gameOver: false,
@@ -97,6 +110,16 @@ class App extends Component {
 
     // Enable all the buttons (letters) that were disabled in previous game
     document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
+  }
+
+  // GET RANDOM WORD FROM THE WORDS LIST
+  getRandomWord = () => {
+    const wordsToGuess = ['test', 'demo', 'banana', 'democracy', 'dictatorship', 'idiocracy', 'war', 'new york', 'skopje', 'macedonia', 'javascript', 'programming', 'react', 'chocholate', 'beer','coca cola', 'germany', 'france', 'dortmund', 'london', 'barcelona', 'android', 'intelligence', 'warcraft', 'laptop', 'computer', 'keyboard', 'earth', 'mars', 'galaxy', 'samsung', 'apple'];
+    let wordIndex = Math.floor(Math.random() * wordsToGuess.length);
+
+    this.setState({
+      word: wordsToGuess[wordIndex]
+    })
   }
 
   // EXIT GAME
@@ -122,18 +145,12 @@ class App extends Component {
       return <Letters letter={key} key={index} id={index} click={this.letterClickHandler.bind(this, key, index)}/>
     })
 
-    
-    let wordsClass = "not_matched"; 
-    // if(this.state.wordMatched) {
-    //   wordsClass = "matched";
-    // }
-
     // Generate blank fields according to the length of the word that needs to be matched
     const generatedWord = [...this.state.word].map( (word, index) => {
       // Fill in the letters at the appropriate index positions for the word that needs to be matched
       for(let i = 0; i < this.state.typedWord.length; i++) {
         if(this.state.typedWord[i] === word) {
-          return <Word wordLength={null} theClass={wordsClass} letter={word} key={index}/>
+          return <Word wordLength={null} theClass={this.state.wordClass} letter={word} key={index}/>
         }
       }
       return <Word wordLength={null} key={index} />
@@ -174,18 +191,14 @@ export default App;
 
 /*
 -The hang component(?)
-- Add a class to the letters when matched, and remove it afterwards
-- Play again - updates state with new word to match
+- Play again - updates state with new word to match - DONE NEEDS TO BE PUSHED
 - Add option to use keyboard instead of onscreen letters
-
-
-wordsToGuess = ['test', 'demo', 'banana', 'democracy', 'dictatorship', 'idiocracy', 'war', 'new york', 'skopje', 'macedonia', 'javascript', 'programming', 'react', 'chocholate', 'beer','coca cola', 'germany', 'france', 'dortmund', 'london', 'barcelona', 'android', 'intelligence', 'warcraft', 'laptop', 'computer', 'keyboard', 'earth', 'mars', 'galaxy', 'samsung', 'apple'];
-*/
-
 /* DONE
 - Decreasing lives as user clicks wrong letter - DONE
 - Start game menu - that based on current state, renders either start menu or the game menu - DONE
 - Score count - DONE
-- Keys component
-- Words component - where it will display the word that needs to be guessed and create _ _ _ according to its length
+- Keys component - DONE
+- Words component - where it will display the word that needs to be guessed and create _ _ _ according to its length - DONE
+- Add a class to the letters when matched, and remove it afterwards - DONE
+
 */
