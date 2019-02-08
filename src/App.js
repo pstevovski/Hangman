@@ -6,6 +6,7 @@ import Letters from './Letters/Letters';
 import Word from './Word/Word';
 import GameOver from './GameOver/GameOver';
 import MainMenu from './MainMenu/MainMenu';
+import TheHang from './TheHang/TheHang';
 class App extends Component {
   wordsToGuess = ['test', 'demo', 'banana', 'democracy', 'dictatorship', 'idiocracy', 'war', 'new york', 'skopje', 'macedonia', 'javascript', 'programming', 'react', 'chocholate', 'beer','coca cola', 'germany', 'france', 'dortmund', 'london', 'barcelona', 'android', 'intelligence', 'warcraft', 'laptop', 'computer', 'keyboard', 'earth', 'mars', 'galaxy', 'samsung', 'apple'];
   wordIndex = Math.floor(Math.random() * this.wordsToGuess.length);
@@ -14,7 +15,8 @@ class App extends Component {
     letters: [...'abcdefghijklmnopqrstuvwxyz'],
     word: this.wordsToGuess[this.wordIndex],
     typedWord: [],
-    livesLeft: 5,
+    livesLeft: 6,
+    counter: 0,
     message: '',
     wordClass: '',
     score: 0,
@@ -44,8 +46,6 @@ class App extends Component {
 
     // Disable the clicked button
     document.getElementById(`${index}`).disabled = true;
-    
-    console.log(this.state.typedWord);
 
     // Check if the chosen word matches the typed word, if so increase score and give another word
     if(theWord.join('') === this.state.typedWord.join('')) {
@@ -57,6 +57,8 @@ class App extends Component {
 
         this.setState({
           score: ++this.state.score,
+          livesLeft: 6,
+          counter: 0,          
           typedWord: [],
           wordClass: ''
         })
@@ -73,14 +75,20 @@ class App extends Component {
 
   // CONTROL SCORES
   decreaseLives = () => {
-    this.setState({livesLeft: --this.state.livesLeft});
+    this.setState({
+      livesLeft: --this.state.livesLeft,
+      counter: ++this.state.counter
+    });
 
-    if(this.state.livesLeft <= 0) {
+    if(this.state.livesLeft < 0) {
       this.setState({
         playing: false,
         gameOver: true
       })
     }
+
+    // Draw the man being hanged
+
 
     this.displayMessage("Wrong one!");
   }
@@ -100,7 +108,8 @@ class App extends Component {
 
     // On restart, reset game over state, score, typed word, lives left and set a new word to guess
     this.setState({
-      livesLeft: 5,
+      livesLeft: 6,
+      counter: 0,
       score: 0,
       gameOver: false,
       typedWord: [],
@@ -126,7 +135,8 @@ class App extends Component {
   exitGame = () => {
     // Set the state to match the exited game state
     this.setState({
-      livesLeft: 5,
+      livesLeft: 6,
+      counter: 0,
       score: 0,
       gameOver: false,
       playing: false,
@@ -172,7 +182,7 @@ class App extends Component {
     // PLAYING MENU
     const playingMenu = <div>
         <button className="exit-btn" onClick={this.exitGame}>Exit</button>
-        <p className="message">{this.state.message}</p>
+        <TheHang lives={this.state.livesLeft} counter={this.state.counter} />
         <p className="score">Score: <span>{this.state.score}</span></p>
         <div className="the-word">{generatedWord}</div>
         <div className="letterContainer">{generatedLetters}</div>
@@ -191,7 +201,6 @@ export default App;
 
 /*
 -The hang component(?)
-- Play again - updates state with new word to match - DONE NEEDS TO BE PUSHED
 - Add option to use keyboard instead of onscreen letters
 /* DONE
 - Decreasing lives as user clicks wrong letter - DONE
@@ -200,5 +209,6 @@ export default App;
 - Keys component - DONE
 - Words component - where it will display the word that needs to be guessed and create _ _ _ according to its length - DONE
 - Add a class to the letters when matched, and remove it afterwards - DONE
+- Play again - updates state with new word to match - DONE
 
 */
