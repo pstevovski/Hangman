@@ -15,7 +15,7 @@ class App extends Component {
     letters: [...'abcdefghijklmnopqrstuvwxyz'],
     word: this.wordsToGuess[this.wordIndex],
     typedWord: [],
-    livesLeft: 6,
+    livesLeft: 5,
     counter: 0,
     message: '',
     wordClass: '',
@@ -45,7 +45,7 @@ class App extends Component {
     }
 
     // Disable the clicked button
-    document.getElementById(`${index}`).disabled = true;
+    document.getElementById(index).disabled = true;
 
     // Check if the chosen word matches the typed word, if so increase score and give another word
     if(theWord.join('') === this.state.typedWord.join('')) {
@@ -55,13 +55,13 @@ class App extends Component {
         // Get a random word for the state
         this.getRandomWord();
 
-        this.setState({
-          score: ++this.state.score,
-          livesLeft: 6,
+        this.setState(prevState => ({
+          score: ++prevState.score,
+          livesLeft: 5,
           counter: 0,          
           typedWord: [],
           wordClass: ''
-        })
+        }));
         this.updatedTypedWord = [...this.state.typedWord];
 
         // Re-enable all the buttons (letters) that were previously disabled
@@ -75,12 +75,12 @@ class App extends Component {
 
   // CONTROL SCORES
   decreaseLives = () => {
-    this.setState({
-      livesLeft: --this.state.livesLeft,
-      counter: ++this.state.counter
-    });
+    this.setState(prevState => ({
+      livesLeft: --prevState.livesLeft,
+      counter: ++prevState.counter
+    }));
 
-    if(this.state.livesLeft < 0) {
+    if(this.state.livesLeft <= 0) {
       this.setState({
         playing: false,
         gameOver: true
@@ -108,7 +108,7 @@ class App extends Component {
 
     // On restart, reset game over state, score, typed word, lives left and set a new word to guess
     this.setState({
-      livesLeft: 6,
+      livesLeft: 5,
       counter: 0,
       score: 0,
       gameOver: false,
@@ -135,7 +135,7 @@ class App extends Component {
   exitGame = () => {
     // Set the state to match the exited game state
     this.setState({
-      livesLeft: 6,
+      livesLeft: 5,
       counter: 0,
       score: 0,
       gameOver: false,
@@ -157,7 +157,7 @@ class App extends Component {
 
     // Generate blank fields according to the length of the word that needs to be matched
     const generatedWord = [...this.state.word].map( (word, index) => {
-      // Fill in the letters at the appropriate index positions for the word that needs to be matched
+    // Fill in the letters at the appropriate index positions for the word that needs to be matched
       for(let i = 0; i < this.state.typedWord.length; i++) {
         if(this.state.typedWord[i] === word) {
           return <Word wordLength={null} theClass={this.state.wordClass} letter={word} key={index}/>
@@ -180,13 +180,14 @@ class App extends Component {
     }
 
     // PLAYING MENU
-    const playingMenu = <div>
+    const playingMenu =
+      <div>
         <button className="exit-btn" onClick={this.exitGame}>Exit</button>
-        <TheHang lives={this.state.livesLeft} counter={this.state.counter} />
+        <TheHang lives={this.state.livesLeft} counter={this.state.counter} playing={this.state.playing} />
         <p className="score">Score: <span>{this.state.score}</span></p>
         <div className="the-word">{generatedWord}</div>
         <div className="letterContainer">{generatedLetters}</div>
-      </div>
+      </div>;
 
     return (
       <div className="App">
@@ -198,17 +199,3 @@ class App extends Component {
 }
 
 export default App;
-
-/*
--The hang component(?)
-- Add option to use keyboard instead of onscreen letters
-/* DONE
-- Decreasing lives as user clicks wrong letter - DONE
-- Start game menu - that based on current state, renders either start menu or the game menu - DONE
-- Score count - DONE
-- Keys component - DONE
-- Words component - where it will display the word that needs to be guessed and create _ _ _ according to its length - DONE
-- Add a class to the letters when matched, and remove it afterwards - DONE
-- Play again - updates state with new word to match - DONE
-
-*/
