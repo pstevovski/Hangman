@@ -7,7 +7,7 @@
     background-color: #fff;
     color: #333;
     border: 1px solid #cccccc90;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
     width: 50px;
     height: 50px;
     padding: 15px;
@@ -20,16 +20,20 @@
 }
 
 .letters:hover {
-  background-color: #00a8ff;
-  color: #fff;
+  background-color: rgb(241, 241, 241);
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+  color: #444;
+}
+
+.letters:active {
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.4);
 }
 
 .letters:disabled {
-  color: #444;
+  color: #222;
   background-color: #ccc;
-  box-shadow: inset 0px 1px 7px rgba(0,0,0,0.5);
-}
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.4);
+} 
 .letters:disabled:hover {
   background-color: #ccc;
-  color: #444;
 }

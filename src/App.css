@@ -4,7 +4,7 @@
   justify-content: flex-end;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
 }
 
 /* LETTERS CONTAINER */
@@ -44,25 +44,6 @@
 .the-word .matched {
   background-color: #00a8ff;
   color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  width: 50px;
-  height: 50px;
-  border: 1px solid rgba(0,0,0,0.1);
-  border-bottom: 3px solid rgba(0,0,0,0.3);
-  margin: 5px;
-  font-size: 20px;
-  font-family: "Montserrat SemiBold";
-}
-
-/* MESSAGE DISPLAYED */
-.message {
-  font-family: "Montserrat Medium";
-  font-size: 20px;
-  color: #00a8ff;
-  text-align: center;
 }
 
 /* SCORE DISPLAY TEXT */
@@ -81,11 +62,11 @@
 .exit-btn {
   position: absolute;
   left: 0;
-  bottom: 0;
-  background-color: #00a8ff;
-  color: #fff;
-  padding: 10px;
-  width: 90px;
+  top: 0;
+  /* background-color: #00a8ff; */
+  color: #444;
+  padding: 5px;
+  width: 70px;
 }
 
 @media (max-width: 840px) {
