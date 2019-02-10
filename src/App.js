@@ -8,12 +8,9 @@ import GameOver from './GameOver/GameOver';
 import MainMenu from './MainMenu/MainMenu';
 import TheHang from './TheHang/TheHang';
 class App extends Component {
-  wordsToGuess = ['test', 'demo', 'banana', 'democracy', 'dictatorship', 'idiocracy', 'war', 'new york', 'skopje', 'macedonia', 'javascript', 'programming', 'react', 'chocholate', 'beer','coca cola', 'germany', 'france', 'dortmund', 'london', 'barcelona', 'android', 'intelligence', 'warcraft', 'laptop', 'computer', 'keyboard', 'earth', 'mars', 'galaxy', 'samsung', 'apple'];
-  wordIndex = Math.floor(Math.random() * this.wordsToGuess.length);
-
   state = {
-    letters: [...'abcdefghijklmnopqrstuvwxyz'],
-    word: this.wordsToGuess[this.wordIndex],
+    letters: [...'qwertyuiopasdfghjklzxcvbnm'],
+    word: '',
     typedWord: [],
     livesLeft: 5,
     counter: 0,
@@ -23,6 +20,10 @@ class App extends Component {
     gameOver: false,
     mainMenu: true,
     playing: false
+  }
+
+  componentDidMount = () => {
+      window.addEventListener("keyup", e => this.letterClickHandler(e.key));
   }
 
   updatedTypedWord = [...this.state.typedWord];
@@ -45,7 +46,11 @@ class App extends Component {
     }
 
     // Disable the clicked button
-    document.getElementById(index).disabled = true;
+    const keyPressedIndex = this.state.letters.indexOf(key);
+    const charIndex = index || keyPressedIndex;
+    if(this.state.playing) {
+      document.getElementById(charIndex).disabled = true;
+    }
 
     // Check if the chosen word matches the typed word, if so increase score and give another word
     if(theWord.join('') === this.state.typedWord.join('')) {
