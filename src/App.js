@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import './Fonts.css';
 
 // IMPORT COMPONENTS
 import Letters from './Letters/Letters';
@@ -9,12 +10,11 @@ import MainMenu from './MainMenu/MainMenu';
 import TheHang from './TheHang/TheHang';
 class App extends Component {
   state = {
-    letters: [...'qwertyuiopasdfghjklzxcvbnm'],
+    letters: [...'qwertyuiopasdfghjklzxcvbnm '],
     word: '',
     typedWord: [],
     livesLeft: 5,
     counter: 0,
-    message: '',
     wordClass: '',
     score: 0,
     gameOver: false,
@@ -22,11 +22,13 @@ class App extends Component {
     playing: false
   }
 
+  // Listen for keys pressed as soon as main component has mounted
   componentDidMount = () => {
-      window.addEventListener("keyup", e => this.letterClickHandler(e.key));
+      document.body.addEventListener("keyup", e => this.letterClickHandler(e.key));
   }
 
   updatedTypedWord = [...this.state.typedWord];
+  
   // WHEN LETTER IS CLICKED
   letterClickHandler = ( key, index ) => {
     const theWord = [...this.state.word];
@@ -40,16 +42,17 @@ class App extends Component {
     }
     this.setState({typedWord: this.updatedTypedWord})
 
-    // If the letter pressed is not present in the word to be matched, loose a life
-    if(!theWord.includes(key)) {
-      this.decreaseLives();
-    }
-
     // Disable the clicked button
     const keyPressedIndex = this.state.letters.indexOf(key);
     const charIndex = index || keyPressedIndex;
+
     if(this.state.playing) {
       document.getElementById(charIndex).disabled = true;
+
+      // If the letter pressed is not present in the word to be matched, loose a life
+      if(!theWord.includes(key)) {
+        this.decreaseLives();
+      }
     }
 
     // Check if the chosen word matches the typed word, if so increase score and give another word
@@ -72,39 +75,24 @@ class App extends Component {
         // Re-enable all the buttons (letters) that were previously disabled
         document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
       }, 1000)
-  
-      // Display a message
-      this.displayMessage("Good job!");
     }
   }
 
-  // CONTROL SCORES
+  // LIVES
   decreaseLives = () => {
+    // Decrease lives and increase counter when wrong letter is used
     this.setState(prevState => ({
       livesLeft: --prevState.livesLeft,
       counter: ++prevState.counter
     }));
 
+    // If lives number reaches 0, its game over
     if(this.state.livesLeft <= 0) {
       this.setState({
         playing: false,
         gameOver: true
       })
     }
-
-    // Draw the man being hanged
-
-
-    this.displayMessage("Wrong one!");
-  }
-
-  displayMessage = message => {
-    this.setState({message: message})
-
-    // Clear the message
-    setTimeout(() => {
-        this.setState({message: ""})
-    }, 1000);
   }
 
   // START / RESTART GAME
@@ -126,33 +114,18 @@ class App extends Component {
     document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
   }
 
+  // EXIT GAME AND GO BACK TO MAIN MENU
+  exitGame = () => this.setState({gameOver: false, playing: false, mainMenu: true})
+
   // GET RANDOM WORD FROM THE WORDS LIST
   getRandomWord = () => {
-    const wordsToGuess = ['test', 'demo', 'banana', 'democracy', 'dictatorship', 'idiocracy', 'war', 'new york', 'skopje', 'macedonia', 'javascript', 'programming', 'react', 'chocholate', 'beer','coca cola', 'germany', 'france', 'dortmund', 'london', 'barcelona', 'android', 'intelligence', 'warcraft', 'laptop', 'computer', 'keyboard', 'earth', 'mars', 'galaxy', 'samsung', 'apple'];
-    let wordIndex = Math.floor(Math.random() * wordsToGuess.length);
+    const wordsToGuess = ['demo', 'banana', 'democracy', 'dictatorship', 'idiocracy', 'war', 'new york', 'skopje', 'macedonia', 'javascript', 'programming', 'react', 'chocholate', 'beer','coca cola', 'germany', 'france', 'dortmund', 'london', 'barcelona', 'android', 'intelligence', 'warcraft', 'laptop', 'computer', 'keyboard', 'earth', 'mars', 'galaxy', 'samsung', 'apple'];
+    const wordIndex = Math.floor(Math.random() * wordsToGuess.length);
 
     this.setState({
       word: wordsToGuess[wordIndex]
     })
   }
-
-  // EXIT GAME
-  exitGame = () => {
-    // Set the state to match the exited game state
-    this.setState({
-      livesLeft: 5,
-      counter: 0,
-      score: 0,
-      gameOver: false,
-      playing: false,
-      mainMenu: true,
-      typedWord: []
-    })
-
-    // Enable all the buttons (letters) that were disabled in previous game
-    document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
-  }
-
 
   render() {
     // Generate the letter components for each letter in the alphabet
@@ -171,7 +144,7 @@ class App extends Component {
       return <Word wordLength={null} key={index} />
     })
 
-    // Render Game over menu if game was lost
+    // Render Main menu or Game over menu if conditions are met
     let menu = null;
     if(this.state.mainMenu) {
       menu = (
