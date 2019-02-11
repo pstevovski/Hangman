@@ -41,6 +41,13 @@
   font-family: "Montserrat SemiBold";
 }
 
+@media (max-width: 500px) {
+  .the-word p {
+    width: 30px;
+    height: 30px;
+  }
+}
+
 .the-word .matched {
   background-color: #00a8ff;
   color: #fff;

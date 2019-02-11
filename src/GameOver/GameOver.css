@@ -12,6 +12,12 @@
     z-index: 9;
 }
 
+@media (max-width: 500px) {
+    .game-over_menu {
+        width: 80%;
+    }
+}
+
 .game-over_menu h1 {
     font-family: "Montserrat Bold";
     color: #e1302a;
@@ -40,6 +46,7 @@ button {
     background-color: #fff;
     color: #444;
     cursor: pointer;
+    outline: none;
     font-family: "Montserrat SemiBold";
     transition: 0.2s ease;
 }

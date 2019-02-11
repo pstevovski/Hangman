@@ -37,3 +37,11 @@
 .letters:disabled:hover {
   background-color: #ccc;
 }
+
+@media (max-width: 500px) {
+  .letters {
+    width: 40px;
+    height: 40px;
+    padding: 0px;
+  }
+}
