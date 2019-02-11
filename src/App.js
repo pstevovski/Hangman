@@ -90,7 +90,8 @@ class App extends Component {
     if(this.state.livesLeft <= 0) {
       this.setState({
         playing: false,
-        gameOver: true
+        gameOver: true,
+        typedWord: []
       })
     }
   }
@@ -109,6 +110,10 @@ class App extends Component {
       playing: true,
       mainMenu: false
     })
+
+    // Reset the updated typed word array
+    this.updatedTypedWord = null;
+    this.updatedTypedWord = [...this.state.typedWord];
 
     // Enable all the buttons (letters) that were disabled in previous game
     document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
