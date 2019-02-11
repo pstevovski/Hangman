@@ -46,6 +46,7 @@ class App extends Component {
     const keyPressedIndex = this.state.letters.indexOf(key);
     const charIndex = index || keyPressedIndex;
 
+
     if(this.state.playing) {
       // If the letter pressed is not present in the word to be matched
       // AND it hasnt been ALREADY disabled, loose a life
@@ -53,7 +54,10 @@ class App extends Component {
         this.decreaseLives();
       }
 
-      document.getElementById(charIndex).disabled = true;
+      // If the game is not over, disable the letter used
+      if(!this.state.gameOver) {
+        document.getElementById(charIndex).disabled = true;
+      }
     }
 
     // Check if the chosen word matches the typed word, if so increase score and give another word
