@@ -1,6 +1,7 @@
 # Hangman game
 
 Hangman game created with React.
+[Live demo!](https://kind-mahavira-b77172.netlify.com)
 
 ###### Known bugs to be fixed: 
 - [ ] When using keyboard (only) to fill in the letters, wrong letters, even though disabled, can be used more than once, resulting in loosing lives.
