@@ -47,12 +47,13 @@ class App extends Component {
     const charIndex = index || keyPressedIndex;
 
     if(this.state.playing) {
-      document.getElementById(charIndex).disabled = true;
-
-      // If the letter pressed is not present in the word to be matched, loose a life
-      if(!theWord.includes(key)) {
+      // If the letter pressed is not present in the word to be matched
+      // AND it hasnt been ALREADY disabled, loose a life
+      if(!theWord.includes(key) && !document.getElementById(charIndex).disabled) {
         this.decreaseLives();
       }
+
+      document.getElementById(charIndex).disabled = true;
     }
 
     // Check if the chosen word matches the typed word, if so increase score and give another word
