@@ -6,7 +6,7 @@ const mainMenu = props => {
     return (
         <div className="main-menu">
             <h1>The Hangman</h1>
-            <button onClick={props.play}>Play</button>
+            <button onClick={() => props.play()}>Play</button>
             <a href="https://github.com/pecko95/Hangman"><img src={logo} width="24px" height="24px" alt="GitHub" title="GitHub repository" /></a>
 
             <footer>
