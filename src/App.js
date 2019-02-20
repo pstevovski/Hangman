@@ -8,12 +8,15 @@ import Word from './Word/Word';
 import GameOver from './GameOver/GameOver';
 import MainMenu from './MainMenu/MainMenu';
 import TheHang from './TheHang/TheHang';
+
+const LETTERS = [...'qwertyuiopasdfghjklzxcvbnm '];
+
 class App extends Component {
   state = {
-    letters: [...'qwertyuiopasdfghjklzxcvbnm '],
+    letters: {},
     word: '',
     typedWord: [],
-    livesLeft: 5,
+    livesLeft: 6,
     counter: 0,
     wordClass: '',
     score: 0,
@@ -23,16 +26,36 @@ class App extends Component {
   }
 
   // Listen for keys pressed as soon as main component has mounted
-  componentDidMount = () => {
-      document.body.addEventListener("keyup", e => this.letterClickHandler(e.key));
+  componentDidMount () {
+
+    this.setState({letters: this.initLetters()});
+      document.body.addEventListener("keyup", this.onKeyUp);
+  };
+
+  componentWillUnmount () {
+    document.body.removeEventListener("keyup", this.onKeyUp);
   }
 
   updatedTypedWord = [...this.state.typedWord];
   
   // WHEN LETTER IS CLICKED
-  letterClickHandler = ( key, index ) => {
-    const theWord = [...this.state.word];
+  letterClickHandler =  (e,key)  => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.checkLetter(key)
+  };
 
+  onKeyUp = e => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.checkLetter(e.key)
+  };
+
+
+  checkLetter = key => {
+    const theWord = [...this.state.word];
+    console.log(key);
     // Cycle trough the chosen word, and check if the entered letter (key) matches a letter
     // at any of the index positions of the chosen word
     for(let i = 0; i < theWord.length; ++i) {
@@ -43,20 +66,23 @@ class App extends Component {
     this.setState({typedWord: this.updatedTypedWord})
 
     // Disable the clicked button
-    const keyPressedIndex = this.state.letters.indexOf(key);
-    const charIndex = index || keyPressedIndex;
-
+    const keyPressedIndex = this.state.letters[key];
 
     if(this.state.playing) {
       // If the letter pressed is not present in the word to be matched
       // AND it hasnt been ALREADY disabled, loose a life
-      if(!theWord.includes(key) && !document.getElementById(charIndex).disabled) {
+      if(!theWord.includes(key) && this.state.letters[key] === false) {
         this.decreaseLives();
       }
 
       // If the game is not over, disable the letter used
       if(!this.state.gameOver) {
-        document.getElementById(charIndex).disabled = true;
+        this.setState( {
+          letters: {
+            ...this.state.letters,
+            [key]: true
+          }
+        });
       }
     }
 
@@ -64,24 +90,29 @@ class App extends Component {
     if(theWord.join('') === this.state.typedWord.join('')) {
       this.setState({wordClass: "matched"});
 
-      setTimeout(() => {
-        // Get a random word for the state
-        this.getRandomWord();
+      this.getRandomWord();
 
-        this.setState(prevState => ({
-          score: ++prevState.score,
-          livesLeft: 5,
-          counter: 0,          
-          typedWord: [],
-          wordClass: ''
-        }));
-        this.updatedTypedWord = [...this.state.typedWord];
+      this.setState(prevState => ({
+        score: ++prevState.score,
+        livesLeft: 6,
+        counter: 0,
+        typedWord: [],
+        wordClass: ''
+      }));
+      this.updatedTypedWord = [...this.state.typedWord];
 
-        // Re-enable all the buttons (letters) that were previously disabled
-        document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
-      }, 1000)
+      // Re-enable all the buttons (letters) that were previously disabled
+      this.setState({
+        letters: this.initLetters()
+      })
     }
   }
+
+  initLetters = () => {
+    let letters = {};
+    LETTERS.forEach(letter => letters[letter] = false);
+    return letters;
+  };
 
   // LIVES
   decreaseLives = () => {
@@ -89,16 +120,18 @@ class App extends Component {
     this.setState(prevState => ({
       livesLeft: --prevState.livesLeft,
       counter: ++prevState.counter
-    }));
+    }), () => {
 
-    // If lives number reaches 0, its game over
-    if(this.state.livesLeft <= 0) {
-      this.setState({
-        playing: false,
-        gameOver: true,
-        typedWord: []
-      })
-    }
+      // If lives number reaches 0, its game over
+      if(this.state.livesLeft <= 0) {
+        this.setState({
+          playing: false,
+          gameOver: true,
+          typedWord: []
+        })
+      }
+    });
+
   }
 
   // START / RESTART GAME
@@ -107,7 +140,7 @@ class App extends Component {
 
     // On restart, reset game over state, score, typed word, lives left and set a new word to guess
     this.setState({
-      livesLeft: 5,
+      livesLeft: 6,
       counter: 0,
       score: 0,
       gameOver: false,
@@ -121,7 +154,7 @@ class App extends Component {
     this.updatedTypedWord = [...this.state.typedWord];
 
     // Enable all the buttons (letters) that were disabled in previous game
-    document.querySelectorAll(".letters").forEach(letter => letter.disabled = false)
+    this.setState({letters: this.initLetters()});
   }
 
   // EXIT GAME AND GO BACK TO MAIN MENU
@@ -139,9 +172,9 @@ class App extends Component {
 
   render() {
     // Generate the letter components for each letter in the alphabet
-    const generatedLetters = this.state.letters.map((key, index) => {
-      return <Letters letter={key} key={index} id={index} click={this.letterClickHandler.bind(this, key, index)}/>
-    })
+    const generatedLetters = Object.keys(this.state.letters).map((key, index) => {
+      return <Letters letter={key} key={index} id={index} disabled={this.state.letters[key]} click={this.letterClickHandler}/>
+    });
 
     // Generate blank fields according to the length of the word that needs to be matched
     const generatedWord = [...this.state.word].map( (word, index) => {
@@ -170,7 +203,7 @@ class App extends Component {
     // PLAYING MENU
     const playingMenu =
       <div>
-        <button className="exit-btn" onClick={this.exitGame}>Exit</button>
+        <button className="exit-btn" onClick={() => this.exitGame()}>Exit</button>
         <TheHang lives={this.state.livesLeft} counter={this.state.counter} playing={this.state.playing} />
         <p className="score">Score: <span>{this.state.score}</span></p>
         <div className="the-word">{generatedWord}</div>

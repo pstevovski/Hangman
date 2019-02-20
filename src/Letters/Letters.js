@@ -13,7 +13,7 @@ const letters = props => {
     }
     return (
     <div>
-        <button className="letters" id={props.id} onClick={props.click}>{letter}</button>
+        <button disabled={props.disabled} className="letters" id={props.id} onClick={e => props.click(e, props.letter, props.id)}>{props.letter}</button>
     </div>
     )
 }

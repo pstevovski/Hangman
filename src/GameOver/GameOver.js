@@ -8,8 +8,8 @@ const gameOver = props => {
             <p>You failed to figure out what the correct word was, and now Bill is dead. Don't be like Bill, remember?</p>
             <p>Your score: <span>{props.score}</span></p>
             <div className="game-over_menu-buttons">
-                <button onClick={props.exit}>EXIT</button>
-                <button onClick={props.restart}>RESTART</button>
+                <button onClick={() => props.exit()}>EXIT</button>
+                <button onClick={() => props.restart()}>RESTART</button>
             </div>
         </div>
     )
